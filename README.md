@@ -13,23 +13,29 @@ verifies their authenticity, and updates order records idempotently.
 
 ## Setup
 
-1. **Install dependencies**
+1. **Install DBngin and create a localhost PostgreSQL database**
+   Download [DBngin](https://dbngin.com), add a PostgreSQL database, and start it.
+
+2. **Install Node.js**  
+   Download and install it if you haven't already.
+
+3. **Install dependencies**
    ```bash
    npm install
    ```
 
-2. **Set environment variables**
+4. **Set environment variables**
    ```bash
    cp .env.example .env
    # Edit .env with your DATABASE_URL and WEBHOOK_SECRET
    ```
 
-3. **Run database migrations**
+5. **Run database migrations**
    ```bash
    npx prisma migrate dev --name init
    ```
 
-4. **Start the server**
+6. **Start the server**
    ```bash
    npm run start:dev
    ```
