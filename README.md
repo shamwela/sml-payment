@@ -14,6 +14,7 @@ verifies their authenticity, and updates order records idempotently.
 ## Setup
 
 1. **Install DBngin and create a localhost PostgreSQL database**
+
    Download [DBngin](https://dbngin.com), add a PostgreSQL database, and start it.
 
 2. **Install Node.js**  
@@ -64,7 +65,10 @@ A shell script `test-webhooks.sh` is included with `curl` commands covering all 
 # Make sure the server is running first
 npm run start:dev
 
-# In another terminal
+# In another terminal, seed the database so the test order exists
+npx ts-node seed.ts
+
+# Run the webhook tests
 bash test-webhooks.sh
 ```
 

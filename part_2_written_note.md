@@ -2,7 +2,7 @@
 
 ## 1. What I built
 
-A NestJS `POST /webhooks/payment` endpoint that receives webhook events from external payment providers, verifies the request, and updates an order status in PostgreSQL.
+A NestJS `POST /webhooks/payment` endpoint that receives webhook events from external payment providers, verifies the request, and updates an order status in PostgreSQL. I also wrote an `openapi.yaml` spec so the API can be documented and tested in Postman or Swagger UI.
 
 **Key decisions:**
 

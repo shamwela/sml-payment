@@ -1,0 +1,88 @@
+openapi: 3.0.3
+info:
+  title: Payment Webhook Handler
+  description: |
+    Receives payment events from external providers, verifies the request,
+    and updates order records idempotently.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local development
+
+paths:
+  /webhooks/payment:
+    post:
+      summary: Receive a payment webhook
+      description: |
+        Processes a payment webhook event. Validates the secret header,
+        parses the payload, and updates the order status.
+        Duplicate events (same `event_id`) return 200 OK without re-processing.
+      tags:
+        - Webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentWebhookPayload'
+      responses:
+        '200':
+          description: |
+            Webhook processed successfully, or the event was a duplicate.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        '401':
+          description: |
+            Missing `x-webhook-secret` header, invalid secret, or malformed payload.
+        '404':
+          description: |
+            The referenced `order_id` does not exist in the database.
+        '500':
+          description: Internal server error.
+
+components:
+  schemas:
+    PaymentWebhookPayload:
+      type: object
+      required:
+        - event_id
+        - event_type
+        - order_id
+      properties:
+        event_id:
+          type: string
+          description: Unique identifier for the webhook event.
+          example: evt_123
+        event_type:
+          type: string
+          enum:
+            - payment.success
+            - payment.failed
+          description: Type of payment event.
+          example: payment.success
+        order_id:
+          type: string
+          description: External ID of the order being updated.
+          example: ord_456
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of the event.
+          example: '2024-01-01T00:00:00Z'
+  securitySchemes:
+    WebhookSecret:
+      type: apiKey
+      in: header
+      name: x-webhook-secret
+      description: |
+        Shared secret used to verify the webhook request originates from
+        the trusted payment provider.
+
+security:
+  - WebhookSecret: []
