@@ -27,7 +27,10 @@ export class WebhooksController {
     }
 
     const expectedSecret = process.env.WEBHOOK_SECRET
-    if (expectedSecret && secretHeader !== expectedSecret) {
+    if (!expectedSecret) {
+      throw new UnauthorizedException('Webhook secret is not configured')
+    }
+    if (secretHeader !== expectedSecret) {
       throw new UnauthorizedException('Invalid webhook secret')
     }
 
